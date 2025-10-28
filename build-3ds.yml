@@ -1,0 +1,36 @@
+name: Build Nintendo 3DS App
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkitarm:latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Build 3DS application
+      run: |
+        export DEVKITPRO=/opt/devkitpro
+        export DEVKITARM=/opt/devkitpro/devkitARM
+        make
+
+    - name: Upload .3dsx file
+      uses: actions/upload-artifact@v3
+      with:
+        name: Replit3DS-3dsx
+        path: Replit3DS.3dsx
+
+    - name: Upload .elf file
+      uses: actions/upload-artifact@v3
+      with:
+        name: Replit3DS-elf
+        path: Replit3DS.elf
